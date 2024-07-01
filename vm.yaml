@@ -1,0 +1,53 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: winvm
+spec:
+  running: false
+  template:
+    metadata:
+      labels:
+        kubevirt.io/size: small
+        kubevirt.io/domain: winvm
+    spec:
+      domain:
+        cpu:
+          cores: 4
+        devices:
+          disks:
+            - bootOrder: 2
+              cdrom:
+                bus: sata
+              name: cdromiso
+            - disk:
+                bus: virtio
+              bootOrder: 1
+              name: harddrive
+            - cdrom:
+                bus: sata
+              name: virtiocontainerdisk
+          interfaces:
+          - name: default
+            masquerade: {}
+          inputs:
+          - bus: usb
+            name: tablet1
+            type: tablet
+        resources:
+          requests:
+            memory: 10Gi
+          limits:
+            memory: 10Gi
+      networks:
+      - name: default
+        pod: {}
+      volumes:
+        - name: cdromiso
+          dataVolume:
+            name: windev
+        - name: harddrive
+          persistentVolumeClaim:
+            claimName: winhd
+        - containerDisk:
+            image: kubevirt/virtio-container-disk
+          name: virtiocontainerdisk
