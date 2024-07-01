@@ -1,0 +1,15 @@
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: "windev"
+spec:
+  source:
+      http:
+         url: "https://yumrepo.nrp-nautilus.io/vm/Win10_20H2_v2_English_x64.iso"
+  pvc:
+    volumeMode: Filesystem
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: "10Gi"
