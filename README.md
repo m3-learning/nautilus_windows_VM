@@ -79,3 +79,33 @@ kubectl apply -f drive.yaml
 ```bash
 kubectl apply -f vm.yaml
 ```
+
+## 4. Starting the VM
+
+```bash
+virtctl start winvm
+```
+
+## 5. Accessing the VM
+
+```bash
+kubectl apply -f virtvnc.yaml
+```
+
+## 6. Service accounts and roles
+
+```bash
+kubectl apply -f serviceaccounts.yaml 
+```
+
+## 7. Ingress
+
+**NOTE:** If necessary you can change the ingress to use a different domain.
+
+```bash
+kubectl apply -f ingress.yaml
+```
+
+## 8. Secret to hold the password for your virtvnc:
+
+kubectl create secret generic virtvnc-login  --from-literal=auth=jca92::password

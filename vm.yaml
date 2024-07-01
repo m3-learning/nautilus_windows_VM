@@ -2,6 +2,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: winvm
+  namespace: m3learning
 spec:
   running: false
   template:
@@ -10,6 +11,15 @@ spec:
         kubevirt.io/size: small
         kubevirt.io/domain: winvm
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: nautilus.io/linstor
+                    operator: In
+                    values:
+                      - "true"
       domain:
         cpu:
           cores: 4
@@ -27,20 +37,22 @@ spec:
                 bus: sata
               name: virtiocontainerdisk
           interfaces:
-          - name: default
-            masquerade: {}
+            - name: default
+              masquerade: {}
           inputs:
-          - bus: usb
-            name: tablet1
-            type: tablet
+            - bus: usb
+              name: tablet1
+              type: tablet
         resources:
           requests:
-            memory: 10Gi
+            memory: "10Gi"
+            cpu: "4000m"
           limits:
-            memory: 10Gi
+            memory: "20Gi"
+            cpu: "8000m"
       networks:
-      - name: default
-        pod: {}
+        - name: default
+          pod: {}
       volumes:
         - name: cdromiso
           dataVolume:

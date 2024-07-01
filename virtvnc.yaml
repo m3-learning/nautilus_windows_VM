@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: virtvnc
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: virtvnc
+  template:
+    metadata:
+      labels:
+        app: virtvnc
+    spec:
+      containers:
+      - env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: gitlab-registry.nrp-nautilus.io/prp/virtvnc
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /
+            port: 8001
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: virtvnc
+        resources:
+          requests:
+            cpu: 1m
+            memory: 100Mi
+          limits:
+            cpu: 2m
+            memory: 200Mi
+      serviceAccountName: virtvnc
